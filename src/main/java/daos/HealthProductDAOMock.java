@@ -1,18 +1,18 @@
 package daos;
 
 import dtos.HealthProductDTO;
+import persistence.model.HealthProduct;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class HealthProductDAOMock {
+public class HealthProductDAOMock implements iDAO {
     private static int counter = 1;
     private static Map<Integer, HealthProductDTO> productDTOSet = new HashMap<>();
 
-    public static Set<HealthProductDTO> getAll() {
+    @Override
+    public Set<HealthProductDTO> getAll() {
         Set<HealthProductDTO> resultSet = new HashSet<>();
         for (Map.Entry<Integer, HealthProductDTO> entry : productDTOSet.entrySet()) {
             HealthProductDTO productDTO = entry.getValue();
@@ -22,11 +22,13 @@ public class HealthProductDAOMock {
         return resultSet;
     }
 
-    public static HealthProductDTO getById(int id) {
+    @Override
+    public HealthProductDTO getById(int id) {
         return productDTOSet.get(id);
     }
 
-    public static Set<HealthProductDTO> getByCategory(String category) {
+    @Override
+    public Set<HealthProductDTO> getByCategory(String category) {
         Set<HealthProductDTO> list = new HashSet<>();
         for (Map.Entry<Integer, HealthProductDTO> entry : productDTOSet.entrySet()) {
             if (entry.getValue().getCategory().equals(category)) {
@@ -36,14 +38,16 @@ public class HealthProductDAOMock {
         return list;
     }
 
-    public static HealthProductDTO create(HealthProductDTO healthProduct) {
+    @Override
+    public HealthProductDTO create(HealthProductDTO healthProduct) {
         healthProduct.setId(counter);
         productDTOSet.put(counter, healthProduct);
         counter++;
         return healthProduct;
     }
 
-    public static HealthProductDTO update(HealthProductDTO healthProduct) {
+    @Override
+    public HealthProductDTO update(HealthProductDTO healthProduct) {
         int id = healthProduct.getId();
         if (productDTOSet.containsKey(id)) {
             productDTOSet.put(id, healthProduct);
@@ -52,11 +56,13 @@ public class HealthProductDAOMock {
         return null;
     }
 
-    public static HealthProductDTO delete(int id) {
+    @Override
+    public HealthProductDTO delete(int id) {
         return productDTOSet.remove(id);
     }
 
-    public static Set<HealthProductDTO> getTwoWeeksToExpire() {
+    @Override
+    public Set<HealthProductDTO> getTwoWeeksToExpire() {
         Set<HealthProductDTO> set = new HashSet<>();
         LocalDate twoWeeksAhead = LocalDate.now().plusWeeks(2);
         for (HealthProductDTO healthProductDTO : productDTOSet.values()) {
@@ -65,5 +71,40 @@ public class HealthProductDAOMock {
             }
         }
         return set;
+    }
+
+    @Override
+    public Set<HealthProductDTO> getProductsWithLessThan50Calories() {
+        return getAll()
+                .stream()
+                .filter(healthProductDTO -> healthProductDTO.getCalories() < 50)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<String> getProductNames() {
+        return getAll()
+                .stream()
+                .map(HealthProductDTO::getName)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public double groupByCategories(String category) {
+        return getAll()
+                .stream()
+                .filter(healthProductDTO -> healthProductDTO.getCategory().equals(category))
+                .mapToDouble(HealthProductDTO::getPrice)
+                .sum();
+    }
+
+    @Override
+    public void addProductToStorage(int storageId, int productId) {
+
+    }
+
+    @Override
+    public Set<HealthProduct> getProductsByStorageShelf(int storageId) {
+        return Set.of();
     }
 }

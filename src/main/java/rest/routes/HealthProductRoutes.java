@@ -5,6 +5,7 @@ import exceptions.APIException;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,29 +16,31 @@ import java.util.logging.Logger;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class HealthProductRoutes {
-    private static final HealthProductController healthProductController = new HealthProductController();
+    private static EntityManagerFactory emf;
     private static final Logger logger = Logger.getLogger(HealthProductRoutes.class.getName());
+
     // Write above the name of the class,
     // that it is being used in.
     static {
+        String logFilePath = "C:\\Users\\baban\\OneDrive\\Skrivebord\\Datamatiker\\3 Tredje Semester\\Mockup-exam-10th-april-2024\\src\\main\\java\\exceptions\\exceptioncatcherfile.txt";
         try {
-            // Create a file for logging
-            File file = new File("C:\\Users\\baban\\OneDrive\\Skrivebord\\Datamatiker\\3 Tredje Semester\\Mockup-exam-10th-april-2024\\src\\main\\java\\exceptions\\exceptioncatcherfile.txt");
-            if (!file.exists()) {
-                file.createNewFile();
+            File logFile = new File(logFilePath);
+            if (!logFile.exists()) {
+                logFile.createNewFile();
             }
-            // Create a FileHandler to write log messages to the file
-            FileHandler fileHandler = new FileHandler(file.getPath());
-
-            // Add the FileHandler to the logger
-            logger.addHandler(fileHandler);
+            logger.addHandler(new FileHandler(logFilePath));
         } catch (IOException e) {
-            System.err.println("Error creating log file: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Error creating log file: " + logFilePath, e);
         }
     }
 
-    public static EndpointGroup getHealthProductRoutes() {
+    public HealthProductRoutes(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    private static HealthProductController healthProductController = new HealthProductController(emf);
+
+    public EndpointGroup getHealthProductRoutes() {
         return () -> path("/api/healthproducts", () -> {
             get("/", handleExceptions(ctx -> healthProductController.getAll().handle(ctx)));
 

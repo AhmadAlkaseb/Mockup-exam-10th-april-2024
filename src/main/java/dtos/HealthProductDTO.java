@@ -1,17 +1,14 @@
 package dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Builder
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-// Task 1.3
 public class HealthProductDTO {
     private static int counter = 1;
     private int id;

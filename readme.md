@@ -98,3 +98,13 @@ Response:
     POST                /api/healthproducts/            APIException & 500
     PUT                 /api/healthproducts/{id}        APIException & 404
     DELETE              /api/healthproducts/{id}        APIException & 404
+
+# Task 2.3
+I have done it in the following steps:
+1)
+I start by initializing the following: (It lets my logger know the class its being used in)
+Logger logger = Logger.getLogger(HealthProductRoutes.class.getName());
+2)
+I then add a file to my logger, which my exceptions will be written to.
+3)
+If my routes catch an exception, then they will be writing to the file using my logException method.
