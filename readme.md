@@ -91,3 +91,10 @@ Response:
 }
 
 # Task 2.2
+    HTTP Method         REST Resource                   Exception and status code
+        
+    GET                 /api/healthproducts             APIException & 404
+    GET                 /api/healthproducts/{id}        APIException & 404
+    POST                /api/healthproducts/            APIException & 500
+    PUT                 /api/healthproducts/{id}        APIException & 404
+    DELETE              /api/healthproducts/{id}        APIException & 404

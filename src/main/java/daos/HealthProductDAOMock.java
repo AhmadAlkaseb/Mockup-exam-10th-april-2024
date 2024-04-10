@@ -12,8 +12,14 @@ public class HealthProductDAOMock {
     private static int counter = 1;
     private static Map<Integer, HealthProductDTO> productDTOSet = new HashMap<>();
 
-    public static Map<Integer, HealthProductDTO> getAll() {
-        return productDTOSet;
+    public static Set<HealthProductDTO> getAll() {
+        Set<HealthProductDTO> resultSet = new HashSet<>();
+        for (Map.Entry<Integer, HealthProductDTO> entry : productDTOSet.entrySet()) {
+            HealthProductDTO productDTO = entry.getValue();
+            productDTO.setId(entry.getKey());
+            resultSet.add(productDTO);
+        }
+        return resultSet;
     }
 
     public static HealthProductDTO getById(int id) {
